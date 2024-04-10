@@ -9,7 +9,11 @@ import {
   Button,
   VStack,
   Heading,
+  HStack,
+  IconButton,
+  useToast,
 } from "@chakra-ui/react";
+import { CopyIcon } from "@chakra-ui/icons";
 
 interface ExcuseContentType {
   intro: string[];
@@ -22,18 +26,30 @@ const Index = (props: ExcuseContentType) => {
   const [scapegoat, setScapegoat] = useState(0);
   const [delay, setDelay] = useState(0);
 
+  const toast = useToast();
+
   const regenerate = () => {
     setIntro(Math.floor(Math.random() * props.intro.length));
     setScapegoat(Math.floor(Math.random() * props.scapegoat.length));
     setDelay(Math.floor(Math.random() * props.delay.length));
   };
 
+  const handleCopy = () => {
+    const excuse = [intro, scapegoat, delay].join(" ");
+    navigator.clipboard.writeText(excuse);
+
+    toast({
+      title: "Excuse copied",
+      status: "success",
+    });
+  };
+
   return (
     <Container height="100vh">
       <Center minH="full">
         <VStack align="start" spacing={4}>
-          <Heading maxW="15ch" fontSize="4xl">
-            Random plans excuse generator
+          <Heading maxW="full" fontSize="4xl">
+            Random excuse generator
           </Heading>
 
           <Stack direction={{ base: "column", md: "row" }} spacing={1}>
@@ -53,9 +69,27 @@ const Index = (props: ExcuseContentType) => {
             </VStack>
           </Stack>
 
-          <Button colorScheme="green" w="full" onClick={regenerate}>
-            Generate
-          </Button>
+          <HStack w="full">
+            <Button colorScheme="blue" w="full" onClick={regenerate}>
+              Generate
+            </Button>
+            <IconButton aria-label="Copy" onClick={handleCopy}>
+              <CopyIcon />
+            </IconButton>
+          </HStack>
+
+          <HStack gap={1} mx="auto" fontStyle="italic">
+            <Text fontSize="sm">Made in 5 minutes by</Text>
+            <a
+              href="https://github.com/bring-shrubbery"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Text fontSize="md" color="blue.500">
+                Antoni
+              </Text>
+            </a>
+          </HStack>
         </VStack>
       </Center>
     </Container>
